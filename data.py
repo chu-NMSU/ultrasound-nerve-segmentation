@@ -2,8 +2,7 @@ from __future__ import print_function
 
 import os
 import numpy as np
-
-import cv2
+import scipy.ndimage
 
 data_path = 'raw/'
 
@@ -27,8 +26,10 @@ def create_train_data():
         if 'mask' in image_name:
             continue
         image_mask_name = image_name.split('.')[0] + '_mask.tif'
-        img = cv2.imread(os.path.join(train_data_path, image_name), cv2.IMREAD_GRAYSCALE)
-        img_mask = cv2.imread(os.path.join(train_data_path, image_mask_name), cv2.IMREAD_GRAYSCALE)
+        # img = cv2.imread(os.path.join(train_data_path, image_name), cv2.IMREAD_GRAYSCALE)
+        # img_mask = cv2.imread(os.path.join(train_data_path, image_mask_name), cv2.IMREAD_GRAYSCALE)
+        img = scipy.ndimage.imread(os.path.join(train_data_path, image_name), flatten=True)
+        img_mask = scipy.ndimage.imread(os.path.join(train_data_path, image_mask_name), flatten=True)
 
         img = np.array([img])
         img_mask = np.array([img_mask])
@@ -66,7 +67,8 @@ def create_test_data():
     print('-'*30)
     for image_name in images:
         img_id = int(image_name.split('.')[0])
-        img = cv2.imread(os.path.join(train_data_path, image_name), cv2.IMREAD_GRAYSCALE)
+        # img = cv2.imread(os.path.join(train_data_path, image_name), cv2.IMREAD_GRAYSCALE)
+        img = scipy.ndimage.imread(os.path.join(train_data_path, image_name), flatten=True)
 
         img = np.array([img])
 

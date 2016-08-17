@@ -1,14 +1,17 @@
 from __future__ import print_function
 
 import numpy as np
-import cv2
+import scipy.misc
+# import cv2
 from data import image_cols, image_rows
 
 
 def prep(img):
     img = img.astype('float32')
-    img = cv2.threshold(img, 0.5, 1., cv2.THRESH_BINARY)[1].astype(np.uint8)
-    img = cv2.resize(img, (image_cols, image_rows))
+    # img = cv2.threshold(img, 0.5, 1., cv2.THRESH_BINARY)[1].astype(np.uint8)
+    img = (img>=0.5)
+    # img = cv2.resize(img, (image_cols, image_rows))
+    img = scipy.misc.imresize(img, size=(image_rows, image_cols))
     return img
 
 
@@ -27,10 +30,10 @@ def run_length_enc(label):
     return ' '.join([str(r) for r in res])
 
 
-def submission():
+def submission(test_pred_path):
     from data import load_test_data
     imgs_test, imgs_id_test = load_test_data()
-    imgs_test = np.load('imgs_mask_test.npy')
+    imgs_test = np.load(test_pred_path)
 
     argsort = np.argsort(imgs_id_test)
     imgs_id_test = imgs_id_test[argsort]
@@ -51,7 +54,7 @@ def submission():
             print('{}/{}'.format(i, total))
 
     first_row = 'img,pixels'
-    file_name = 'submission.csv'
+    file_name = test_pred_path.replace('.npy', '.csv')
 
     with open(file_name, 'w+') as f:
         f.write(first_row + '\n')
